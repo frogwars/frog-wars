@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frog Wars</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-wrap">
+      <header class="topbar">
+        <h1>Frog Wars</h1>
+        <div class="hud-panel">
+          <span>Health: <strong id="healthValue">100</strong></span>
+          <span>Score: <strong id="scoreValue">0</strong></span>
+          <span>Time: <strong id="timeValue">0s</strong></span>
+          <span>Level: <strong id="levelValue">1</strong></span>
+          <span>Weapon: <strong id="weaponValue">Poison Darts</strong></span>
+        </div>
+      </header>
+
+      <main class="game-shell">
+        <canvas id="gameCanvas" width="640" height="360" aria-label="Frog Wars game"></canvas>
+        <button id="woodActionButton" class="wood-action-button" type="button" hidden>Collect / Drop Wood</button>
+
+        <div id="overlay" class="overlay visible">
+          <div class="panel">
+            <svg class="turtle-art" viewBox="0 0 760 340" role="img" aria-label="A grey and purple cyborg turtle">
+              <defs>
+                <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f0f3f8" />
+                  <stop offset="0.36" stop-color="#8792a3" />
+                  <stop offset="0.72" stop-color="#414b5b" />
+                  <stop offset="1" stop-color="#252d39" />
+                </linearGradient>
+                <linearGradient id="shell" x1="0" y1="0" x2="0.8" y2="1">
+                  <stop offset="0" stop-color="#b9c1d0" />
+                  <stop offset="0.45" stop-color="#535e70" />
+                  <stop offset="1" stop-color="#252d3b" />
+                </linearGradient>
+                <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#e1baff" />
+                  <stop offset="0.42" stop-color="#9b5bea" />
+                  <stop offset="1" stop-color="#51248f" />
+                </linearGradient>
+                <radialGradient id="eyeGlow">
+                  <stop offset="0" stop-color="#fff" />
+                  <stop offset="0.32" stop-color="#e8c5ff" />
+                  <stop offset="1" stop-color="#9a4cff" />
+                </radialGradient>
+                <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+              </defs>
+              <ellipse cx="390" cy="294" rx="250" ry="22" fill="#070b13" opacity="0.7" />
+
+              <g transform="translate(0,-12)">
+                <path d="M286 224 C299 182 337 152 391 152 C445 152 483 182 497 224 L494 254 L293 255 Z" fill="url(#shell)" stroke="#dfe9f8" stroke-width="8" />
+                <path d="M303 229 C318 195 343 176 390 172 C437 168 465 193 480 228 L477 258 L306 259 Z" fill="#4f5c6f" stroke="#171e29" stroke-width="7" />
+                <path d="M324 210 L336 166 L382 145 L423 167 L437 209 Z" fill="url(#purple)" stroke="#d5b3ff" stroke-width="4" />
+                <path d="M358 182 L390 161 L420 167 L429 196 L411 215 L369 214 Z" fill="#64738a" stroke="#1d2530" stroke-width="5" />
+                <path d="M297 230 L266 197 L250 170 L214 176 L191 202 L198 238 L249 245 Z" fill="url(#metal)" stroke="#1d2530" stroke-width="7" />
+                <path d="M309 259 L331 290 L299 312 L264 299 L255 278 Z" fill="url(#metal)" stroke="#1d2530" stroke-width="7" />
+                <path d="M448 256 L470 282 L510 304 L547 292 L553 267 L500 255 Z" fill="url(#metal)" stroke="#1d2530" stroke-width="7" />
+                <path d="M366 286 L390 320 L418 286 L432 323 L382 347 L325 323 Z" fill="url(#metal)" stroke="#1d2530" stroke-width="8" />
+                <path d="M352 300 L332 399 L353 408 L382 324 L406 406 L425 396 L410 300 Z" fill="#7d8797" stroke="#1d2530" stroke-width="6" />
+                <path d="M264 296 L225 399 L246 405 L298 319 L258 298 Z" fill="#6e7888" stroke="#1d2530" stroke-width="6" />
+                <path d="M443 296 L485 399 L468 405 L422 318 L462 295 Z" fill="#6e7888" stroke="#1d2530" stroke-width="6" />
+                <path d="M361 118 L390 90 L421 92 L444 120 L423 153 L363 152 Z" fill="url(#purple)" stroke="#1d2530" stroke-width="7" />
+                <path d="M330 119 L306 96 L279 104 L270 138 L286 158 L324 159 Z" fill="url(#purple)" stroke="#1d2530" stroke-width="7" />
+                <path d="M431 118 L457 95 L489 103 L497 137 L476 157 L435 156 Z" fill="url(#purple)" stroke="#1d2530" stroke-width="7" />
+                <path d="M326 93 C342 70 366 57 390 57 C417 57 439 70 454 93" fill="none" stroke="#f2f6ff" stroke-width="5" stroke-linecap="round" opacity="0.8" />
+                <g fill="#f0caff" stroke="#342247" stroke-width="3">
+                  <circle cx="337" cy="137" r="7" /><circle cx="420" cy="131" r="7" />
+                  <circle cx="390" cy="176" r="8" /><circle cx="458" cy="197" r="6" />
+                  <circle cx="302" cy="188" r="6" /><circle cx="323" cy="222" r="5" />
+                </g>
+                <ellipse cx="349" cy="196" rx="12" ry="9" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+                <ellipse cx="430" cy="196" rx="12" ry="9" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+                <circle cx="504" cy="175" r="5" fill="#bd7dff" />
+                <path d="M531 162 L559 147 L582 159 L567 190 L531 192 Z" fill="url(#metal)" stroke="#1d2530" stroke-width="6" />
+                <path d="M555 191 L603 181 L624 199 L603 218 L557 214 Z" fill="#5d6d81" stroke="#1d2530" stroke-width="6" />
+                <path d="M559 194 Q607 200 620 214" fill="none" stroke="#d3d9e3" stroke-width="5" stroke-linecap="round" />
+                <path d="M524 213 Q547 229 573 216" fill="none" stroke="#202734" stroke-width="7" />
+                <path d="M286 220 L252 242 L287 252 L315 225 Z" fill="url(#purple)" opacity="0.9" />
+                <path d="M469 220 L501 242 L467 252 L440 221 Z" fill="url(#purple)" opacity="0.9" />
+              </g>
+
+              <g fill="#b76cff" filter="url(#softGlow)">
+                <circle cx="258" cy="216" r="5" /><circle cx="500" cy="180" r="5" />
+                <circle cx="615" cy="190" r="4" /><circle cx="342" cy="302" r="4" />
+              </g>
+            </svg>
+            <h2>Island Survival</h2>
+
+            <div class="setup-block">
+              <div class="name-row">
+                <label class="name-label" for="playerNameInput">Enter your first and last name.</label>
+                <input id="playerNameInput" type="text" autocomplete="name" placeholder="First and last name" required />
+              </div>
+
+              <label class="toggle-row" for="toadToggle">
+                <input id="toadToggle" type="checkbox" checked />
+                <span>Include the toad ally this round</span>
+              </label>
+
+              <div class="room-row">
+                <label class="code-label" for="roomCodeInput">Enter code</label>
+                <input id="roomCodeInput" type="text" maxlength="8" placeholder="Enter code" value="" />
+                <button id="joinRoomButton" class="small-button" type="button">Join</button>
+                <button id="hostRoomButton" class="small-button secondary-button" type="button">Host Link</button>
+              </div>
+            </div>
+
+            <p>
+              You are an orange poison dart frog. Survive the squid swarm on your island with the help of
+              your computer toad ally.
+            </p>
+            <ul>
+              <li>Move with WASD or Arrow Keys</li>
+              <li>Collect glowing berries to recover health</li>
+              <li>Keep the squids away from your island</li>
+              <li>Switch weapons with Q/E or the mouse wheel</li>
+            </ul>
+            <button id="startButton">Start Game</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
